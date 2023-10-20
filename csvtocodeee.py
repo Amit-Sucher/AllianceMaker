@@ -115,19 +115,30 @@ def create_alliances(team_data):
 
     alliances = []
     alliance_leaders = ranked_teams[:8]
+
     all_teams = set(ranked_teams)  # we use a set here for efficiency
 
-    for leader in alliance_leaders:
+    for _ in range(8):
+
+        leader = alliance_leaders.pop(0)  # remove the leader from the leaders list
+        if leader in alliances:
+            break
+        else:
+            pass
+
         alliance = [leader]
+
         all_teams.discard(leader)
 
-        for _ in range(1):
-            if all_teams:  # still has robot to pick
-                next_robot = pick_team(alliance, list(all_teams), team_data, alliances)
-                alliance.append(next_robot)
-                all_teams.discard(next_robot)
+        if all_teams:  # still has robot to pick
+            next_robot = pick_team(alliance, list(all_teams), team_data, alliances)
+            alliance.append(next_robot)
+            all_teams.discard(next_robot)
 
         alliances.append(alliance)
+
+        if len(ranked_teams) > 8:  # if there are more teams left
+            alliance_leaders.append(ranked_teams[0])  # the 9th team becomes a leader
 
     for alliance in reversed(alliances):
         if all_teams:  # still has robot to pick
@@ -136,6 +147,7 @@ def create_alliances(team_data):
             all_teams.discard(next_robot)
 
     return alliances
+
 
 
 def main():
